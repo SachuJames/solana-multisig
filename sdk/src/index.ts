@@ -198,8 +198,8 @@ export function proposeIx(
   const ix = new TransactionInstruction({
     programId: PROGRAM_ID,
     keys: [
-      { pubkey: proposer, isSigner: true, isWritable: false },
-      { pubkey: multisig, isSigner: false, isWritable: false },
+      { pubkey: proposer, isSigner: true, isWritable: true },
+      { pubkey: multisig, isSigner: false, isWritable: true },
       { pubkey: proposal, isSigner: false, isWritable: true },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
       { pubkey: SYSVAR_CLOCK_PUBKEY, isSigner: false, isWritable: false },
@@ -238,10 +238,10 @@ export function executeSolIx(
       { pubkey: executor, isSigner: true, isWritable: false },
       { pubkey: multisig, isSigner: false, isWritable: true },
       { pubkey: proposal, isSigner: false, isWritable: true },
+      { pubkey: SYSVAR_CLOCK_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: vault, isSigner: false, isWritable: true },
       { pubkey: destination, isSigner: false, isWritable: true },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-      { pubkey: SYSVAR_CLOCK_PUBKEY, isSigner: false, isWritable: false },
     ],
     data: Buffer.from([3]),
   });
@@ -251,6 +251,7 @@ export function executeTokenIx(
   executor: PublicKey,
   multisig: PublicKey,
   proposal: PublicKey,
+  vault: PublicKey,
   vaultTokenAccount: PublicKey,
   destinationTokenAccount: PublicKey
 ): TransactionInstruction {
@@ -261,6 +262,7 @@ export function executeTokenIx(
       { pubkey: multisig, isSigner: false, isWritable: true },
       { pubkey: proposal, isSigner: false, isWritable: true },
       { pubkey: SYSVAR_CLOCK_PUBKEY, isSigner: false, isWritable: false },
+      { pubkey: vault, isSigner: false, isWritable: false },
       { pubkey: vaultTokenAccount, isSigner: false, isWritable: true },
       { pubkey: destinationTokenAccount, isSigner: false, isWritable: true },
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },

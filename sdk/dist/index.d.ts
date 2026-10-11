@@ -62,7 +62,7 @@ export declare function proposeIx(proposer: PublicKey, multisig: PublicKey, inde
 };
 export declare function approveIx(owner: PublicKey, multisig: PublicKey, proposal: PublicKey): TransactionInstruction;
 export declare function executeSolIx(executor: PublicKey, multisig: PublicKey, proposal: PublicKey, vault: PublicKey, destination: PublicKey): TransactionInstruction;
-export declare function executeTokenIx(executor: PublicKey, multisig: PublicKey, proposal: PublicKey, vaultTokenAccount: PublicKey, destinationTokenAccount: PublicKey): TransactionInstruction;
+export declare function executeTokenIx(executor: PublicKey, multisig: PublicKey, proposal: PublicKey, vault: PublicKey, vaultTokenAccount: PublicKey, destinationTokenAccount: PublicKey): TransactionInstruction;
 export declare function executeConfigIx(executor: PublicKey, multisig: PublicKey, proposal: PublicKey): TransactionInstruction;
 export declare function cancelIx(owner: PublicKey, multisig: PublicKey, proposal: PublicKey): TransactionInstruction;
 export declare function depositIx(funder: PublicKey, vault: PublicKey, amount: bigint): TransactionInstruction;

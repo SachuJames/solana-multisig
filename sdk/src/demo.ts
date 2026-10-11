@@ -54,7 +54,7 @@ async function main() {
       SystemProgram.transfer({
         fromPubkey: funder.publicKey,
         toPubkey: kp.publicKey,
-        lamports: 2 * LAMPORTS_PER_SOL,
+        lamports: 10 * LAMPORTS_PER_SOL,
       })
     );
     await sendAndConfirmTransaction(connection, tx, [funder]);

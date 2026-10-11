@@ -61,7 +61,7 @@ async function main() {
         const tx = new web3_js_1.Transaction().add(web3_js_1.SystemProgram.transfer({
             fromPubkey: funder.publicKey,
             toPubkey: kp.publicKey,
-            lamports: 2 * web3_js_1.LAMPORTS_PER_SOL,
+            lamports: 10 * web3_js_1.LAMPORTS_PER_SOL,
         }));
         await (0, web3_js_1.sendAndConfirmTransaction)(connection, tx, [funder]);
     }

@@ -142,8 +142,8 @@ function proposeIx(proposer, multisig, index, kind, destination, amount, mint) {
     const ix = new web3_js_1.TransactionInstruction({
         programId: exports.PROGRAM_ID,
         keys: [
-            { pubkey: proposer, isSigner: true, isWritable: false },
-            { pubkey: multisig, isSigner: false, isWritable: false },
+            { pubkey: proposer, isSigner: true, isWritable: true },
+            { pubkey: multisig, isSigner: false, isWritable: true },
             { pubkey: proposal, isSigner: false, isWritable: true },
             { pubkey: web3_js_1.SystemProgram.programId, isSigner: false, isWritable: false },
             { pubkey: web3_js_1.SYSVAR_CLOCK_PUBKEY, isSigner: false, isWritable: false },
@@ -170,15 +170,15 @@ function executeSolIx(executor, multisig, proposal, vault, destination) {
             { pubkey: executor, isSigner: true, isWritable: false },
             { pubkey: multisig, isSigner: false, isWritable: true },
             { pubkey: proposal, isSigner: false, isWritable: true },
+            { pubkey: web3_js_1.SYSVAR_CLOCK_PUBKEY, isSigner: false, isWritable: false },
             { pubkey: vault, isSigner: false, isWritable: true },
             { pubkey: destination, isSigner: false, isWritable: true },
             { pubkey: web3_js_1.SystemProgram.programId, isSigner: false, isWritable: false },
-            { pubkey: web3_js_1.SYSVAR_CLOCK_PUBKEY, isSigner: false, isWritable: false },
         ],
         data: Buffer.from([3]),
     });
 }
-function executeTokenIx(executor, multisig, proposal, vaultTokenAccount, destinationTokenAccount) {
+function executeTokenIx(executor, multisig, proposal, vault, vaultTokenAccount, destinationTokenAccount) {
     return new web3_js_1.TransactionInstruction({
         programId: exports.PROGRAM_ID,
         keys: [
@@ -186,6 +186,7 @@ function executeTokenIx(executor, multisig, proposal, vaultTokenAccount, destina
             { pubkey: multisig, isSigner: false, isWritable: true },
             { pubkey: proposal, isSigner: false, isWritable: true },
             { pubkey: web3_js_1.SYSVAR_CLOCK_PUBKEY, isSigner: false, isWritable: false },
+            { pubkey: vault, isSigner: false, isWritable: false },
             { pubkey: vaultTokenAccount, isSigner: false, isWritable: true },
             { pubkey: destinationTokenAccount, isSigner: false, isWritable: true },
             { pubkey: spl_token_1.TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
