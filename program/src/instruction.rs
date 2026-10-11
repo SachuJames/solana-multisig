@@ -34,8 +34,8 @@ pub enum TreasuryInstruction {
     /// Create a proposal. The proposer counts as the first approver.
     ///
     /// Accounts:
-    /// 0. `[signer]` proposer (must be an owner)
-    /// 1. `[]` multisig
+    /// 0. `[signer, writable]` proposer (must be an owner; pays for the proposal account)
+    /// 1. `[writable]` multisig
     /// 2. `[writable]` proposal PDA `[b"proposal", multisig, index]`
     /// 3. `[]` system program
     /// 4. `[]` clock sysvar
@@ -50,26 +50,22 @@ pub enum TreasuryInstruction {
     /// Execute a proposal that reached threshold and whose timelock expired.
     /// Anyone may call this.
     ///
-    /// Transfer accounts:
+    /// Common accounts:
     /// 0. `[signer]` executor (pays nothing, only a signer for ordering)
     /// 1. `[writable]` multisig
     /// 2. `[writable]` proposal
-    /// 3. `[writable]` vault PDA
-    /// 4. `[writable]` destination
-    /// 5. `[]` system program
-    /// 6. `[]` clock sysvar
+    /// 3. `[]` clock sysvar
+    ///
+    /// SOL transfer additionally:
+    /// 4. `[writable]` vault PDA
+    /// 5. `[writable]` destination
+    /// 6. `[]` system program
     ///
     /// Token transfer additionally:
+    /// 4. `[]` vault PDA (signs the token CPI)
     /// 5. `[writable]` vault token account (owner = vault PDA)
     /// 6. `[writable]` destination token account
     /// 7. `[]` SPL Token program
-    /// 8. `[]` clock sysvar
-    ///
-    /// Config changes:
-    /// 0. `[signer]` executor
-    /// 1. `[writable]` multisig
-    /// 2. `[writable]` proposal
-    /// 3. `[]` clock sysvar
     Execute,
     /// Vote to cancel a proposal. The proposer cancels immediately;
     /// other owners need `threshold` cancel votes.

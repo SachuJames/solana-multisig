@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  program:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Solana toolchain
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+      - name: Build SBF
+        working-directory: program
+        run: cargo build-sbf
+      - name: Unit + integration tests
+        working-directory: program
+        run: cargo test
+
+  sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - working-directory: sdk
+        run: |
+          npm ci
+          npm run build
+
+  dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - working-directory: dashboard
+        run: |
+          npm ci
+          npm run build

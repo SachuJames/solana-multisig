@@ -17,7 +17,6 @@ import {
   executeSolIx,
   fetchMultisig,
   fetchProposal,
-  findVaultPda,
   propose,
   proposalStatus,
   sendIx,
@@ -148,8 +147,6 @@ async function main() {
   );
   await approve(connection, owners[1], multisig, prop3);
   await new Promise((r) => setTimeout(r, 10000));
-  const [, v2] = findVaultPda(multisig);
-  void v2;
   const execCfg = executeConfigIx(owners[0].publicKey, multisig, prop3);
   await sendIx(connection, execCfg, [owners[0]], owners[0].publicKey);
   ms = await fetchMultisig(connection, multisig);

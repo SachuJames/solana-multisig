@@ -114,8 +114,6 @@ async function main() {
     const { proposal: prop3 } = await (0, index_1.propose)(connection, owners[0], multisig, { tag: "AddOwner", newOwner: newcomer }, web3_js_1.PublicKey.default, 0n, web3_js_1.PublicKey.default);
     await (0, index_1.approve)(connection, owners[1], multisig, prop3);
     await new Promise((r) => setTimeout(r, 10000));
-    const [, v2] = (0, index_1.findVaultPda)(multisig);
-    void v2;
     const execCfg = (0, index_1.executeConfigIx)(owners[0].publicKey, multisig, prop3);
     await (0, index_1.sendIx)(connection, execCfg, [owners[0]], owners[0].publicKey);
     ms = await (0, index_1.fetchMultisig)(connection, multisig);

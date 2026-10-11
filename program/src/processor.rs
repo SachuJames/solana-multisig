@@ -146,7 +146,10 @@ fn load_multisig(data: &[u8]) -> Result<Multisig, ProgramError> {
 }
 
 fn load_proposal(data: &[u8]) -> Result<Proposal, ProgramError> {
-    Proposal::try_from_slice(data).map_err(|_| ProgramError::InvalidAccountData.into())
+    // The account reserves PROPOSAL_LEN bytes but the borsh enum makes the
+    // serialized form shorter; deserialize tolerantly of trailing zeros.
+    let mut slice = data;
+    Proposal::deserialize(&mut slice).map_err(|_| ProgramError::InvalidAccountData.into())
 }
 
 fn save_multisig(ms: &Multisig, data: &mut [u8]) -> ProgramResult {
@@ -159,11 +162,13 @@ fn save_multisig(ms: &Multisig, data: &mut [u8]) -> ProgramResult {
 }
 
 fn save_proposal(p: &Proposal, data: &mut [u8]) -> ProgramResult {
+    // ProposalKind is a variable-length borsh enum, so the serialized form
+    // can be shorter than PROPOSAL_LEN (which reserves the largest variant).
     let bytes = borsh::to_vec(p).map_err(|_| ProgramError::InvalidAccountData)?;
-    if bytes.len() != PROPOSAL_LEN || data.len() < PROPOSAL_LEN {
+    if bytes.len() > data.len() {
         return Err(ProgramError::AccountDataTooSmall);
     }
-    data[..PROPOSAL_LEN].copy_from_slice(&bytes);
+    data[..bytes.len()].copy_from_slice(&bytes);
     Ok(())
 }
 
@@ -436,10 +441,12 @@ fn execute(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
                 .ok_or(TreasuryError::ArithmeticOverflow)?;
         }
         ProposalKind::TokenTransfer => {
+            let vault_ai = next_account_info(it)?;
             let vault_token_ai = next_account_info(it)?;
             let dest_token_ai = next_account_info(it)?;
             let token_program = next_account_info(it)?;
             let (vault_key, vault_bump) = vault_pda(multisig_ai.key, program_id);
+            assert_pda(&vault_key, vault_ai.key)?;
             if *token_program.key != TOKEN_PROGRAM_ID {
                 return Err(TreasuryError::InvalidTokenProgram.into());
             }
@@ -467,7 +474,7 @@ fn execute(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
                 &[
                     vault_token_ai.clone(),
                     dest_token_ai.clone(),
-                    token_program.clone(),
+                    vault_ai.clone(),
                 ],
                 &[seeds],
             )?;
